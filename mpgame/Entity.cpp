@@ -3665,6 +3665,7 @@ void idEntity::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &di
 		//jshepard: this is kinda important, no?
 		health -= damage;
 
+
 		if ( health <= 0 ) {
 			if ( health < -999 ) {
 				health = -999;
@@ -3794,6 +3795,7 @@ This is a virtual function that subclasses are expected to implement.
 ============
 */
 void idEntity::Killed( idEntity *inflictor, idEntity *attacker, int damage, const idVec3 &dir, int location ) {
+
 }
 
 /***********************************************************************

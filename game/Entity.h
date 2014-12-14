@@ -135,6 +135,9 @@ public:
 	idList< idEntityPtr<idEntity> >	targets;		// when this entity is activated these entities entity are activated
 
 	int						health;					// FIXME: do all objects really need health?
+	//experience
+	int						experience;
+	int						level;
 
 // RAVEN BEGIN
 // ddynerman: optional pre-prediction

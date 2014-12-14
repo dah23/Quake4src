@@ -738,6 +738,7 @@ void idDamagable::Killed( idEntity *inflictor, idEntity *attacker, int damage, c
 	if ( gameLocal.time < nextTriggerTime ) {
 		health += damage;
 		return;
+
 	}
 
 	BecomeBroken( attacker );

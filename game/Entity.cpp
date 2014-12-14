@@ -3631,6 +3631,24 @@ inflictor, attacker, dir, and point can be NULL for environmental effects
 */
 void idEntity::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &dir, 
 					  const char *damageDefName, const float damageScale, const int location ) {
+
+	if ( attacker->IsType( idPlayer::GetClassType() ))
+		{
+			//gameLocal.Printf("me");
+			attacker->experience +=1;
+			//gameLocal.Printf("here");
+			if (attacker->experience >= 2)
+			{
+				if(attacker->level>=1000)
+				{
+					attacker->level=0;
+				}
+				attacker->level+=1;
+				attacker->experience=0;	
+				gameLocal.Printf("Level '%d' \n", attacker->level);//prints out very very large number
+											
+			}
+		}
 	if ( forwardDamageEnt.IsValid() ) {
 		forwardDamageEnt->Damage( inflictor, attacker, dir, damageDefName, damageScale, location );
 		return;
@@ -3661,6 +3679,23 @@ void idEntity::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &di
 		// do the damage
 		//jshepard: this is kinda important, no?
 		health -= damage;
+
+		
+	/*
+		if ( attacker->IsType( idPlayer::GetClassType() ))
+		{
+			//gameLocal.Printf("me");
+			attacker->experience +=1;
+			//gameLocal.Printf("here");
+			if (attacker->experience == 20)
+			{
+				attacker->level+=1;
+				attacker->experience=0;	
+				gameLocal.Printf("Level %d", attacker->level);
+							
+			}
+		}
+	*/	
 
 		if ( health <= 0 ) {
 			if ( health < -999 ) {
@@ -3791,6 +3826,7 @@ This is a virtual function that subclasses are expected to implement.
 ============
 */
 void idEntity::Killed( idEntity *inflictor, idEntity *attacker, int damage, const idVec3 &dir, int location ) {
+	
 }
 
 /***********************************************************************

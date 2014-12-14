@@ -9741,6 +9741,7 @@ void idPlayer::Killed( idEntity *inflictor, idEntity *attacker, int damage, cons
 		return;
 	}
 
+
 // squirrel: Mode-agnostic buymenus
 	if ( gameLocal.isMultiplayer ) {
 		if( gameLocal.mpGame.IsBuyingAllowedInTheCurrentGameMode() )
@@ -9753,7 +9754,7 @@ void idPlayer::Killed( idEntity *inflictor, idEntity *attacker, int damage, cons
 				/// Preserve this player's weapons at the state of his death, to be restored on respawn
 				carryOverCurrentWeapon = currentWeapon;
 				inventory.carryOverWeapons = inventory.weapons;
-
+				
 				if( attacker )
 				{
 					idPlayer* killer = NULL;
@@ -9777,6 +9778,9 @@ void idPlayer::Killed( idEntity *inflictor, idEntity *attacker, int damage, cons
 							// Killed by enemy
 							float cashAward = (float) gameLocal.mpGame.mpBuyingManager.GetOpponentKillCashAward();
 							killer->GiveCash( cashAward );
+							
+						
+
 						}
 					}
 				}
@@ -9960,7 +9964,7 @@ void idPlayer::CalcDamagePoints( idEntity *inflictor, idEntity *attacker, const 
 	int		damage;
 	int		armorSave;
 	float	pDmgScale;
-
+	//damage scale for leveling?
 	damageDef->GetInt( "damage", "20", damage );
 	damage = GetDamageForLocation( damage, location );
 
@@ -10063,7 +10067,7 @@ void idPlayer::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &di
  	int			knockback;
  	idVec3		damage_from;
  	float		attackerPushScale;
-
+	
 	// RAVEN BEGIN
 	// twhitaker: difficulty levels
 	float modifiedDamageScale = damageScale;
@@ -10243,6 +10247,24 @@ void idPlayer::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &di
 
 	// do the damage
 	if ( damage > 0 ) {
+		//experience wont work here. only works with player taking damage
+		/*
+		gameLocal.Printf("got to print");
+		if (attacker->IsType( idPlayer::GetClassType() )
+			gameLocal.Printf("Level %d", attacker->level);
+		{
+			attacker->experience +=1;
+			if (attacker->experience == 5)
+			{
+				attacker->level+=1;
+				attacker->experience=0;
+				gameLocal.Printf("Level %d", attacker->level);	
+							
+			}
+		}
+		*/
+
+
 		if ( !gameLocal.isMultiplayer ) {
 			if ( g_useDynamicProtection.GetBool() && g_skill.GetInteger() < 2 ) {
 				if ( gameLocal.time > lastDmgTime + 500 && dynamicProtectionScale > 0.25f ) {
@@ -10261,6 +10283,22 @@ void idPlayer::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &di
 
 		int oldHealth = health;
 		health -= damage;
+		/*
+		idPlayer *player = gameLocal.GetLocalPlayer();
+		attacker = static_cast<idProjectile*>(inflictor)->GetOwner();
+		if (attacker==player)
+		{
+			player->experience +=1;
+			if (player->experience == 20)
+			{
+				player->level+=1;
+				player->experience=0;
+				gameLocal.Printf("Level ", player->level);	
+							
+			}
+		}
+		*/
+
 
 		GAMELOG_ADD ( va("player%d_damage_taken", entityNumber ), damage );
 		GAMELOG_ADD ( va("player%d_damage_%s", entityNumber, damageDefName), damage );
@@ -11278,6 +11316,9 @@ void idPlayer::SetLastHitTime( int time, bool armorHit ) {
 		lastHitToggle ^= 1;
 	}
 }
+
+
+
 
 /*
 =============
@@ -13738,7 +13779,7 @@ void idPlayer::Event_DamageEffect( const char *damageDefName, idEntity* _damageF
 	{
 		idVec3 dir = (_damageFromEnt!=NULL)?(GetEyePosition()-_damageFromEnt->GetEyePosition()):viewAxis[2];
 		dir.Normalize();
-		int		damage = 1;
+		int		damage = 1;//for leveling 'boolean'?
 		ClientDamageEffects( damageDef->dict, dir, damage );
 		if ( !g_testDeath.GetBool() ) {
 			lastDmgTime = gameLocal.time;
