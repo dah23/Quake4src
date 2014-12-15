@@ -3613,6 +3613,29 @@ void idEntity::DamageFeedback( idEntity *victim, idEntity *inflictor, int &damag
 }
 
 /*
+==============
+idPlayer::SetLevel
+==============
+*/
+void idEntity::SetLevel( int newlevel )
+{
+	
+	plevel=newlevel;
+}
+
+/*
+==============
+idPlayer::SetExperience
+==============
+*/
+void idEntity::SetExperience( int newexp )
+{
+	experience=newexp;
+}
+
+
+
+/*
 ============
 Damage
 
@@ -3629,25 +3652,36 @@ inflictor, attacker, dir, and point can be NULL for environmental effects
 
 ============
 */
+//level up on damage
+
 void idEntity::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &dir, 
 					  const char *damageDefName, const float damageScale, const int location ) {
 
 	if ( attacker->IsType( idPlayer::GetClassType() ))
-		{
-			//gameLocal.Printf("me");
-			attacker->experience +=1;
-			//gameLocal.Printf("here");
-			if (attacker->experience >= 2)
+		{	
+			if (attacker->GetLevel()>1000)
 			{
-				if(attacker->level>=1000)
-				{
-					attacker->level=0;
-				}
-				attacker->level+=1;
-				attacker->experience=0;	
-				gameLocal.Printf("Level '%d' \n", attacker->level);//prints out very very large number
-											
+				attacker->SetLevel(1);
+				
 			}
+			if (attacker->GetLevel()==0)
+			{
+				attacker->SetLevel(1);
+				
+			}
+			int tempexp= attacker->GetExperience();
+			tempexp+=1;
+			attacker->SetExperience(tempexp);
+			if (attacker->GetExperience() >=2)
+			{
+				int templevel= attacker->GetLevel();
+				templevel+=1;
+				attacker->SetLevel(templevel);
+				attacker->SetExperience(0);
+				gameLocal.Printf("Level %i \n", attacker->GetLevel());
+
+			}
+
 		}
 	if ( forwardDamageEnt.IsValid() ) {
 		forwardDamageEnt->Damage( inflictor, attacker, dir, damageDefName, damageScale, location );

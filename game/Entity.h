@@ -109,6 +109,8 @@ public:
 
 class idEntity : public idClass {
 public:
+
+	
 	static const int		MAX_PVS_AREAS = 4;
 
 	int						entityNumber;			// index into the entity list
@@ -136,8 +138,7 @@ public:
 
 	int						health;					// FIXME: do all objects really need health?
 	//experience
-	int						experience;
-	int						level;
+
 
 // RAVEN BEGIN
 // ddynerman: optional pre-prediction
@@ -193,9 +194,16 @@ public:
 
 							idEntity();
 							~idEntity();
+	void 					SetLevel(int newLevel);
+	int						GetLevel(){return plevel;}
+	
 
+	void 					SetExperience(int newexp);
+	int						GetExperience(){return experience;
+
+							}
 	void					Spawn( void );
-
+	
 	void					Save( idSaveGame *savefile ) const;
 	void					Restore( idRestoreGame *savefile );
 
@@ -533,6 +541,10 @@ protected:
 	idEntityPtr< idEntity > bindMaster;							// entity bound to if unequal NULL
 	jointHandle_t			bindJoint;							// joint bound to if unequal INVALID_JOINT
 private:
+	//for exp and level
+	int experience;
+	int plevel;
+	//
 	idPhysics_Static		defaultPhysicsObj;					// default physics object
 	idPhysics *				physics;							// physics used for this entity
 	int						bindBody;							// body bound to if unequal -1
@@ -541,7 +553,6 @@ private:
 
 	int						numPVSAreas;						// number of renderer areas the entity covers
 	int						PVSAreas[MAX_PVS_AREAS];			// numbers of the renderer areas the entity covers
-
 	signalList_t *			signals;
 
 	int						mpGUIState;							// local cache to avoid systematic SetStateInt
@@ -579,6 +590,7 @@ protected:
 // RAVEN END
 
 	// events
+	
 	void					Event_GetName( void );
 	void					Event_SetName( const char *name );
 	void					Event_FindTargets( void );

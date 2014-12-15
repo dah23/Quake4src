@@ -4751,6 +4751,8 @@ bool idPlayer::GivePowerUp( int powerup, int time, bool team ) {
 	return true;
 }
 
+
+
 /*
 ==============
 idPlayer::ClearPowerup
