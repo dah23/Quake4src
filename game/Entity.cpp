@@ -514,6 +514,7 @@ idEntity::idEntity() {
 	mpGUIState = -1;
 
 // RAVEN BEGIN
+
 // rjohnson: added this to persist long thinking entities
 	mLastLongThinkTime = 0;
 	mLastLongThinkColor.Zero();
@@ -3614,7 +3615,7 @@ void idEntity::DamageFeedback( idEntity *victim, idEntity *inflictor, int &damag
 
 /*
 ==============
-idPlayer::SetLevel
+idEntity::SetLevel
 ==============
 */
 void idEntity::SetLevel( int newlevel )
@@ -3625,13 +3626,15 @@ void idEntity::SetLevel( int newlevel )
 
 /*
 ==============
-idPlayer::SetExperience
+idEntity::SetExperience
 ==============
 */
 void idEntity::SetExperience( int newexp )
 {
 	experience=newexp;
 }
+
+
 
 
 
@@ -3656,33 +3659,49 @@ inflictor, attacker, dir, and point can be NULL for environmental effects
 
 void idEntity::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &dir, 
 					  const char *damageDefName, const float damageScale, const int location ) {
-
+	
+	
+	const idDict *damageDef = gameLocal.FindEntityDefDict( damageDefName, false );			  
+	
+	int	damage;
+	if ( attacker->IsType( idPlayer::GetClassType()) && this!=attacker)
+	{
+		damage = damageDef->GetInt( "damage" )+ attacker->GetLevel();
+	}
+	else
+	{
+		damage = damageDef->GetInt( "damage" );
+	}
+	
+	
 	if ( attacker->IsType( idPlayer::GetClassType() ))
-		{	
-			if (attacker->GetLevel()>1000)
-			{
-				attacker->SetLevel(1);
-				
-			}
-			if (attacker->GetLevel()==0)
-			{
-				attacker->SetLevel(1);
-				
-			}
-			int tempexp= attacker->GetExperience();
-			tempexp+=1;
-			attacker->SetExperience(tempexp);
-			if (attacker->GetExperience() >=2)
-			{
-				int templevel= attacker->GetLevel();
-				templevel+=1;
-				attacker->SetLevel(templevel);
-				attacker->SetExperience(0);
-				gameLocal.Printf("Level %i \n", attacker->GetLevel());
-
-			}
-
+	{	
+		if (attacker->GetLevel()>1000)
+		{
+			attacker->SetLevel(1);
+			
 		}
+		if (attacker->GetLevel()==0)
+		{
+			attacker->SetLevel(1);
+			
+		}
+		int tempexp= attacker->GetExperience();
+		tempexp+=1;
+		attacker->SetExperience(tempexp);
+		if (attacker->GetExperience() >=10)
+		{
+			int templevel= attacker->GetLevel();
+			templevel+=1;
+			attacker->SetLevel(templevel);
+			attacker->SetExperience(0);
+			gameLocal.Printf("Level '%i'\nOld Weapon Damage '%i'\nNew Damage '%i'\n", attacker->GetLevel(), damageDef->GetInt( "damage" ), damage) ;
+			
+		}
+
+	}
+	
+
 	if ( forwardDamageEnt.IsValid() ) {
 		forwardDamageEnt->Damage( inflictor, attacker, dir, damageDefName, damageScale, location );
 		return;
@@ -3700,18 +3719,18 @@ void idEntity::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &di
 		attacker = gameLocal.world;
 	}
 
-	const idDict *damageDef = gameLocal.FindEntityDefDict( damageDefName, false );
+	
 	if ( !damageDef ) {
 		gameLocal.Error( "Unknown damageDef '%s'\n", damageDefName );
 	}
 
-	int	damage = damageDef->GetInt( "damage" );
-
+	
 	// inform the attacker that they hit someone
 	attacker->DamageFeedback( this, inflictor, damage );
 	if ( damage ) {
 		// do the damage
 		//jshepard: this is kinda important, no?
+		
 		health -= damage;
 
 		

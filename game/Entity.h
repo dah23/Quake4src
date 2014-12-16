@@ -201,6 +201,8 @@ public:
 	void 					SetExperience(int newexp);
 	int						GetExperience(){return experience;
 
+	
+
 							}
 	void					Spawn( void );
 	
