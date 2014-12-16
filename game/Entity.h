@@ -194,6 +194,7 @@ public:
 
 							idEntity();
 							~idEntity();
+	//level system functions
 	void 					SetLevel(int newLevel);
 	int						GetLevel(){return plevel;}
 	
@@ -543,7 +544,7 @@ protected:
 	idEntityPtr< idEntity > bindMaster;							// entity bound to if unequal NULL
 	jointHandle_t			bindJoint;							// joint bound to if unequal INVALID_JOINT
 private:
-	//for exp and level
+	//for exp and level, plevel= player level
 	int experience;
 	int plevel;
 	//

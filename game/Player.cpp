@@ -10249,22 +10249,7 @@ void idPlayer::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &di
 
 	// do the damage
 	if ( damage > 0 ) {
-		//experience wont work here. only works with player taking damage
-		/*
-		gameLocal.Printf("got to print");
-		if (attacker->IsType( idPlayer::GetClassType() )
-			gameLocal.Printf("Level %d", attacker->level);
-		{
-			attacker->experience +=1;
-			if (attacker->experience == 5)
-			{
-				attacker->level+=1;
-				attacker->experience=0;
-				gameLocal.Printf("Level %d", attacker->level);	
-							
-			}
-		}
-		*/
+		
 
 
 		if ( !gameLocal.isMultiplayer ) {
@@ -10285,21 +10270,7 @@ void idPlayer::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &di
 
 		int oldHealth = health;
 		health -= damage;
-		/*
-		idPlayer *player = gameLocal.GetLocalPlayer();
-		attacker = static_cast<idProjectile*>(inflictor)->GetOwner();
-		if (attacker==player)
-		{
-			player->experience +=1;
-			if (player->experience == 20)
-			{
-				player->level+=1;
-				player->experience=0;
-				gameLocal.Printf("Level ", player->level);	
-							
-			}
-		}
-		*/
+		
 
 
 		GAMELOG_ADD ( va("player%d_damage_taken", entityNumber ), damage );

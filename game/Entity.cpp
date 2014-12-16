@@ -3613,6 +3613,7 @@ void idEntity::DamageFeedback( idEntity *victim, idEntity *inflictor, int &damag
 	// implemented in subclasses
 }
 
+//Defining setters for level and experience
 /*
 ==============
 idEntity::SetLevel
@@ -3662,9 +3663,9 @@ void idEntity::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &di
 	
 	
 	const idDict *damageDef = gameLocal.FindEntityDefDict( damageDefName, false );			  
-	
+	//increase weapon damage by level
 	int	damage;
-	if ( attacker->IsType( idPlayer::GetClassType()) && this!=attacker)
+	if ( attacker->IsType( idPlayer::GetClassType()) && this!=attacker && !this->IsType( idPlayer::GetClassType()))
 	{
 		damage = damageDef->GetInt( "damage" )+ attacker->GetLevel();
 	}
@@ -3673,9 +3674,12 @@ void idEntity::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &di
 		damage = damageDef->GetInt( "damage" );
 	}
 	
-	
-	if ( attacker->IsType( idPlayer::GetClassType() ))
+	//Level up upon attacking another entity that isn't the player
+	//attacker->isType is checking if the attacker is a player or not
+	if ( attacker->IsType( idPlayer::GetClassType()) && this!=attacker && !this->IsType( idPlayer::GetClassType()))
 	{	
+		//just in case level starts off as a weird value for whatever reason
+		//I fixed the bug that caused it with setters and getters but left it here still anyway
 		if (attacker->GetLevel()>1000)
 		{
 			attacker->SetLevel(1);
@@ -3686,22 +3690,25 @@ void idEntity::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &di
 			attacker->SetLevel(1);
 			
 		}
+		//set the new experience after attacking
 		int tempexp= attacker->GetExperience();
 		tempexp+=1;
 		attacker->SetExperience(tempexp);
-		if (attacker->GetExperience() >=10)
+		//if experience is above 2 increment the level and reset experience
+		if (attacker->GetExperience() >=2)
 		{
 			int templevel= attacker->GetLevel();
 			templevel+=1;
 			attacker->SetLevel(templevel);
 			attacker->SetExperience(0);
-			gameLocal.Printf("Level '%i'\nOld Weapon Damage '%i'\nNew Damage '%i'\n", attacker->GetLevel(), damageDef->GetInt( "damage" ), damage) ;
+			//print out lvl and weapon attack info after leveling up
+			gameLocal.Printf("Level '%i'\nOriginal Weapon Damage '%i'\nNew Damage '%i'\n", attacker->GetLevel(), damageDef->GetInt( "damage" ), damageDef->GetInt( "damage" )+attacker->GetLevel()) ;
 			
 		}
 
 	}
 	
-
+	
 	if ( forwardDamageEnt.IsValid() ) {
 		forwardDamageEnt->Damage( inflictor, attacker, dir, damageDefName, damageScale, location );
 		return;
@@ -3728,28 +3735,14 @@ void idEntity::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &di
 	// inform the attacker that they hit someone
 	attacker->DamageFeedback( this, inflictor, damage );
 	if ( damage ) {
+		
 		// do the damage
 		//jshepard: this is kinda important, no?
 		
 		health -= damage;
 
 		
-	/*
-		if ( attacker->IsType( idPlayer::GetClassType() ))
-		{
-			//gameLocal.Printf("me");
-			attacker->experience +=1;
-			//gameLocal.Printf("here");
-			if (attacker->experience == 20)
-			{
-				attacker->level+=1;
-				attacker->experience=0;	
-				gameLocal.Printf("Level %d", attacker->level);
-							
-			}
-		}
-	*/	
-
+	
 		if ( health <= 0 ) {
 			if ( health < -999 ) {
 				health = -999;
