@@ -1,4 +1,4 @@
-
+//reviewed by Georgina Matias gam8@njit.edu: functional, good code, declared setters
 #ifndef __GAME_ENTITY_H__
 #define __GAME_ENTITY_H__
 

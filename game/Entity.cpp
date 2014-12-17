@@ -11,6 +11,9 @@
 // RAVEN END
 
 /*
+
+//reviewed by Georgina Matias gam8@njit.edu: functional, good code
+//response: I kinda wish I got better input for how I did the leveling. Its functional how it is but a little bug with splash damage.
 ===============================================================================
 
 	idEntity
